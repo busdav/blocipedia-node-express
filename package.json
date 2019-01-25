@@ -1,0 +1,11 @@
+{
+  "name": "blocipedia-node-express",
+  "version": "1.0.0",
+  "description": "A wikipedia like application for users to create and share content",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "export NODE_ENV=test && jasmine"
+  },
+  "author": "David",
+  "license": "ISC"
+}
