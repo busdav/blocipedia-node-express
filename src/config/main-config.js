@@ -4,7 +4,7 @@ const viewsFolder = path.join(__dirname, "..", "views");
 const bodyParser = require("body-parser");
 const expressValidator = require("express-validator");
 const session = require("express-session");
-// const flash = require("express-flash");
+const flash = require("express-flash");
 const passportConfig = require("./passport-config");
 const logger = require("morgan");
 
@@ -22,7 +22,7 @@ module.exports = {
       saveUninitialized: false,
       cookie: { maxAge: 1.21e+9 } //set cookie to expire in 14 days
     }));
-    // app.use(flash());   
+    app.use(flash());   
     passportConfig.init(app);
     app.use((req,res,next) => {
       res.locals.currentUser = req.user;
