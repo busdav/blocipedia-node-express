@@ -2,6 +2,10 @@ const User = require("./models").User;
 // const Post = require("./models").Post;
 // const Comment = require("./models").Comment;
 const bcrypt = require("bcryptjs");
+// const sgMail = require('@sendgrid/mail');
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+
 
 module.exports = {
 // #2
@@ -17,6 +21,16 @@ module.exports = {
       password: hashedPassword
     })
     .then((user) => {
+      // // using SendGrid's v3 Node.js Library
+      // // https://github.com/sendgrid/sendgrid-nodejs
+      // const msg = {
+      //   to: newUser.email,
+      //   from: 'test@example.com',
+      //   subject: 'User Confirmation',
+      //   text: 'Welcome to Blocipedia',
+      //   html: '<strong>Please login to your account to confirm membership!</strong>',
+      // };
+      // sgMail.send(msg);
       callback(null, user);
     })
     .catch((err) => {
