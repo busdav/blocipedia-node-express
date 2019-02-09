@@ -13,5 +13,18 @@ module.exports = {
     .catch((err) => {
       callback(err);
     })
+  },
+
+  addWiki(newWiki, callback){
+    return Wiki.create({
+      title: newWiki.title,
+      description: newWiki.body
+    })
+    .then((wiki) => {
+      callback(null, wiki);
+    })
+    .catch((err) => {
+      callback(err);
+    })
   }
 }

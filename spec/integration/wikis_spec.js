@@ -14,7 +14,7 @@ describe("routes : wikis", () => {
         body: "There is a lot of them"
       })
       .then((res) => {
-        this.wiki = res;  // store resulting topic in context
+        this.wiki = res;  // store resulting wiki in context
         done();
       })
       .catch((err) => {
@@ -35,6 +35,44 @@ describe("routes : wikis", () => {
         done();
       });
     });
-
   });
+
+  describe("GET /wikis/new", () => {
+
+    it("should render a new wiki form", (done) => {
+      request.get(`${base}new`, (err, res, body) => {
+        expect(err).toBeNull();
+        expect(body).toContain("New Wiki");
+        done();
+      });
+    });
+  });
+
+  describe("POST /wikis/create", () => {
+    const options = {
+      url: `${base}create`,
+      form: {
+        title: "blink-182 songs",
+        body: "What's your favorite blink-182 song?"
+      }
+    };
+
+    it("should create a new wiki and redirect", (done) => {
+      request.post(options,
+        (err, res, body) => {
+          Wiki.findOne({where: {title: "blink-182 songs"}})
+          .then((wiki) => {
+            expect(wiki.title).toBe("blink-182 songs");
+            expect(wiki.body).toBe("What's your favorite blink-182 song?");
+            done();
+          })
+          .catch((err) => {
+            console.log(err);
+            done();
+          });
+        }
+      );
+    });
+  });
+  
 });
