@@ -19,9 +19,11 @@ module.exports = {
   create(req, res, next){
     let newWiki = {
       title: req.body.title,
-      description: req.body.description
+      body: req.body.body,
+      private: req.body.private,
+	    userId: req.user.id
     };
-    topicQueries.addWiki(newWiki, (err, wiki) => {
+    wikiQueries.addWiki(newWiki, (err, wiki) => {
       if(err){
         res.redirect(500, "/wikis/new");
       } else {
@@ -30,5 +32,53 @@ module.exports = {
     });
   },
 
+  show(req, res, next){
 
+    //#1
+         wikiQueries.getWiki(req.params.id, (err, wiki) => {
+    
+    //#2
+           if(err || wiki == null){
+             res.redirect(404, "/");
+           } else {
+             res.render("wikis/show", {wiki});
+           }
+         });
+        },
+
+        destroy(req, res, next){
+          wikiQueries.deleteWiki(req.params.id, (err, wiki) => {
+              if(err){
+                  res.redirect(500, `/wikis/${req.params.id}`); 
+              } else {
+                  res.redirect(303, "/wikis"); 
+              }
+          });
+      },      
+  
+      edit(req, res, next){
+
+        // #1
+            wikiQueries.getWiki(req.params.id, (err, wiki) => {
+              if(err || wiki == null){
+                res.redirect(404, "/");
+              } else {
+       
+                  res.render("topics/edit", {topic});
+              }
+            });
+          },
+
+
+
+
+    update(req, res, next){
+      wikiQueries.updateWiki(req.params_id, req.body, (err, wiki) => {
+          if(err || wiki == null){
+              res.redirect(404, `/wikis/${req.params.id}/edit`);
+          } else {
+              res.redirect(`/wikis/${req.params.id}`);
+          }
+      });
+  },
 }
