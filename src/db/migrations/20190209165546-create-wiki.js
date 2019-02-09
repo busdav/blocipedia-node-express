@@ -18,7 +18,8 @@ module.exports = {
       },
       private: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false
+        defaultValue: false,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -29,7 +30,7 @@ module.exports = {
         type: Sequelize.DATE
       },
       userId: {
-        // allowNull: false,
+        allowNull: false,
         type: Sequelize.INTEGER,
         onDelete: "CASCADE",
         references: {
