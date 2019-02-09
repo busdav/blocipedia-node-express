@@ -14,7 +14,6 @@ describe("routes : wikis", () => {
 
     sequelize.sync({force: true}).then((res) => {
       User.create({
-        username: "user_name",
         email: "user@example.com",
         password: "123456",
       })
@@ -31,10 +30,12 @@ describe("routes : wikis", () => {
         Wiki.create({
           title: "JS Frameworks" ,
           body: "There is a lot of them",
+          private: false,
           userId: user.id
         })
         .then((wiki) => {
           this.wiki = wiki;
+          console.log(wiki);
           done();
         })
         .catch((err) => {
