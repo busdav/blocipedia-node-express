@@ -58,6 +58,18 @@ describe("routes : wikis", () => {
         );
       });
 
+  describe("GET /wikis", () => {
+    it("should return a status code 200 and all wikis", (done) => {
+      request.get(base, (err, res, body) => {
+        expect(err).toBeNull();
+        expect(res.statusCode).toBe(200); 
+        expect(body).toContain("Wikis");
+        expect(body).toContain("Snowball Fighting");
+        done();
+      });
+    });
+  });    
+
   describe("GET /wikis/new", () => {
 
     it("should render a new wiki form", (done) => {
@@ -103,6 +115,78 @@ describe("routes : wikis", () => {
  
   });
 
+});
+
+describe("GET /wikis/:id", () => {
+  it("should render a view with the selected wiki", (done) => {
+    request.get(`${base}${this.wiki.id}`, (err, res, body) => {
+      expect(err).toBeNull();
+      expect(body).toContain("So much snow!");
+      done();
+    });
+  });
+});
+
+
+describe("POST /wikis/:id/destroy", () => {
+  it("should delete the wiki with the associated ID", (done) => {
+    Wiki.findAll()
+    .then((wikis) => {
+      const wikiCountBeforeDelete = wikis.length;
+      expect(wikiCountBeforeDelete).toBe(1);
+      request.post(`${base}${this.wiki.id}/destroy`, (err, res, body) => {
+        Wiki.findAll()
+        .then((wikis) => {
+          expect(err).toBeNull();
+          expect(wikis.length).toBe(wikiCountBeforeDelete - 1);
+          done();
+        })
+        .catch((err) => {
+          console.log(err);
+          done();
+        })
+      });
+    })
+  });
+});
+
+
+describe("GET /wikis/:id/edit", () => {
+  it("should render a view with an edit wiki form", (done) => {
+    request.get(`${base}${this.wiki.id}/edit`, (err, res, body) => {
+      expect(err).toBeNull();
+      expect(body).toContain("Edit Wiki");
+      expect(body).toContain("So much snow!");
+      done();
+    });
+  });
+});
+
+describe("POST /wikis/:id/update", () => {
+  it("should update the wiki with the given values", (done) => {
+    request.post({
+      url: `${base}${this.wiki.id}/update`,
+      form: {
+        title: "JavaScript Frameworks",
+        body: "There are a lot of them",
+        userId: this.user.id
+      }
+    }, (err, res, body) => {
+      expect(err).toBeNull();
+      Wiki.findOne({
+        where: {id: 1}
+      })
+      .then((wiki) => {
+        expect(wiki.title).toBe("JavaScript Frameworks");
+        expect(wiki.body).toBe("There are a lot of them");
+        done();
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+  });
 });
 
 });
