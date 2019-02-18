@@ -9,4 +9,18 @@ module.exports = class WikiPolicy extends ApplicationPolicy {
   create() {
     return this.new();
   }
+
+  edit() {
+    return this.new() && this.record;
+  }
+
+  update() {
+    return this.edit();
+  }
+
+ // #5
+  destroy() {
+    return this.new() && this.record && (this._isOwner() || this._isAdmin());
+  }
+  
 }
