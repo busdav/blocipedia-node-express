@@ -17,7 +17,8 @@ describe("routes : wikis", () => {
 //#1
       User.create({
         email: "starman@tesla.com",
-        password: "Trekkie4lyfe"
+        password: "Trekkie4lyfe",
+        role: "standard"
       })
       .then((user) => {
         this.user = user;
@@ -55,7 +56,8 @@ describe("routes : wikis", () => {
         request.get({
           url: "http://localhost:3000/auth/fake",
           form: {
-            role: "admin"
+            userId: this.user.id,
+            role: "admin",
           }
         },
           (err, res, body) => {
@@ -206,8 +208,8 @@ describe("POST /wikis/:id/update", () => {
         request.get({
           url: "http://localhost:3000/auth/fake",
           form: {
+            userId: this.user.id,
             role: "standard",
-            userId: this.user.id
           }
         },
           (err, res, body) => {
@@ -449,6 +451,7 @@ describe("POST /wikis/:id/update", () => {
     });
   });
 });
+});
 
 
 
@@ -505,7 +508,6 @@ describe("guest attempting to perform CRUD actions on Wiki", () => {
              form: {
                title: "Watching snow melt",
                body: "Without a doubt my favoriting things to do besides watching paint dry!",
-               userId: this.user.id
              }
            };
            request.post(options,
@@ -526,7 +528,6 @@ describe("guest attempting to perform CRUD actions on Wiki", () => {
      
       });
     
-    });
     
     describe("GET /wikis/:id", () => {
       it("should render a view with the selected wiki", (done) => {
@@ -597,4 +598,5 @@ describe("guest attempting to perform CRUD actions on Wiki", () => {
       });
     });
   });
-});
+
+  });
