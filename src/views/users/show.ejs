@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include ../static/partials/head.ejs %>
+  </head>
+  <body>
+
+    <% include ../static/partials/navbar.ejs %>
+
+    <main class="container">
+
+      <% include ../static/partials/messages.ejs %>
+
+ <!-- #1 -->
+      <h1><%= `${user.email}'s profile` %></h1>
+      <a href="/users/<%= user.id %>/upgrade" class="btn btn-success">Upgrade</a>
+
+      <hr>
+
+      <h2> Latest Wikis</h2>
+
+      <ul class="list-unstyled">
+
+ <!-- #2 -->
+        <% if(wikis) { %>
+          <% wikis.forEach((wiki) => { %>
+ <!-- #3 -->
+            <li>
+              <a href="/wikis/<%= wiki.id %>">
+                <%= wiki.title %>
+              </a>
+            </li>
+          <% }) %>
+        <% } %>
+      </ul>
+     
+    </main>
+
+    <% include ../static/partials/baseScripts.ejs %>
+
+  </body>
+</html>

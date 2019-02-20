@@ -2,7 +2,7 @@ const request = require("request");
 const server = require("../../src/server");
 const base = "http://localhost:3000/users/";
 const User = require("../../src/db/models").User;
-// const Topic = require("../../src/db/models").Topic;
+const Wiki = require("../../src/db/models").Wiki;
 // const Post = require("../../src/db/models").Post;
 // const Comment = require("../../src/db/models").Comment;
 const sequelize = require("../../src/db/models/index").sequelize;
@@ -105,64 +105,51 @@ describe("routes : users", () => {
 
 
 
-//   describe("GET /users/:id", () => {
+  describe("GET /users/:id", () => {
 
-//     beforeEach((done) => {
-// // #3
-//       this.user;
-//       this.post;
-//       this.comment;
+    beforeEach((done) => {
+// #3
+      this.user;
+      this.wiki;
 
-//       User.create({
-//         email: "starman@tesla.com",
-//         password: "Trekkie4lyfe"
-//       })
-//       .then((res) => {
-//         this.user = res;
+      User.create({
+        email: "starman@tesla.com",
+        password: "Trekkie4lyfe"
+      })
+      .then((res) => {
+        this.user = res;
 
-//         Topic.create({
-//           title: "Winter Games",
-//           description: "Post your Winter Games stories.",
-//           posts: [{
-//             title: "Snowball Fighting",
-//             body: "So much snow!",
-//             userId: this.user.id
-//           }]
-//         }, {
-//           include: {
-//             model: Post,
-//             as: "posts"
-//           }
-//         })
-//         .then((res) => {
-//           this.post = res.posts[0];
+        Wiki.create({
+          title: "Winter Games",
+          body: "Post your Winter Games stories.",
+          userId: this.user.id
+        })
+        .then((res) => {
+          this.wiki = res;
+          done();
+          })
+        })
+      })
 
-//           Comment.create({
-//             body: "This comment is alright.",
-//             postId: this.post.id,
-//             userId: this.user.id
-//           })
-//           .then((res) => {
-//             this.comment = res;
-//             done();
-//           })
-//         })
-//       })
+    it("should render a view with the selected user", (done) => {
+      request.get(`${base}${this.user.id}`, (err, res, body) => {
+        expect(err).toBeNull();
+        expect(body).toContain(`${this.user.email}`);
+        done();
+      });
+    });
 
-//     });
 
-// // #4
-//     it("should present a list of comments and posts a user has created", (done) => {
+    it("should present a list of wikis a user has created", (done) => {
 
-//       request.get(`${base}${this.user.id}`, (err, res, body) => {
+      request.get(`${base}${this.user.id}`, (err, res, body) => {
 
-// // #5
-//         expect(body).toContain("Snowball Fighting");
-//         expect(body).toContain("This comment is alright.")
-//         done();
-//       });
+// #5
+        expect(body).toContain("Winter Games");
+        done();
+      });
 
-//     });
-//   });
+    });
+  });
 
 });
