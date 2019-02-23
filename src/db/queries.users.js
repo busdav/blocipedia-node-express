@@ -1,5 +1,5 @@
 const User = require("./models").User;
-// const Post = require("./models").Post;
+const Wiki = require("./models").Wiki;
 // const Comment = require("./models").Comment;
 const bcrypt = require("bcryptjs");
 // const sgMail = require('@sendgrid/mail');
