@@ -64,4 +64,15 @@ module.exports = {
        })
      },
 
+
+     getUserOnly(id, callback){
+      return User.findByPk(id)
+      .then((user) => {
+        callback(null, user);
+      })
+      .catch((err) => {
+        callback(err);
+      })
+    },
+
 } 

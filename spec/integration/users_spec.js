@@ -155,8 +155,23 @@ describe("routes : users", () => {
 
   describe("GET /users/upgrade", () => {
 
+
+    beforeEach((done) => {
+      // #3
+            this.user;
+      
+            User.create({
+              email: "starman@tesla.com",
+              password: "Trekkie4lyfe"
+            })
+            .then((res) => {
+              this.user = res;
+              done();
+              })
+            })
+
     it("should render a view with an upgrade form", (done) => {
-      request.get(`${base}upgrade`, (err, res, body) => {
+      request.get(`${base}${this.user.id}/upgrade`, (err, res, body) => {
         expect(err).toBeNull();
         expect(body).toContain("Stripe");
         done();
