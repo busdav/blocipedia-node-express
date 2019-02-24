@@ -1,13 +1,61 @@
-<form action="/users/<%= user.id %>/upgrade" method="POST">
-  <script
-    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-    data-key="pk_test_77z5YrRHm6FkeP46ilOaDsbQ"
-    data-amount="15"
-    data-name="Stripe.com"
-    data-description="Example charge"
-    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-    data-locale="auto"
-    data-zip-code="false"
-    data-currency="usd">
-  </script>
-</form>
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include ../static/partials/head.ejs %>
+  </head>
+  <body>
+
+    <% include ../static/partials/navbar.ejs %>
+
+    <main class="container">
+
+      <% include ../static/partials/messages.ejs %>
+
+ <!-- #1 -->
+      <h1><%= `${user.email}'s profile` %></h1>
+
+      <header class="jumbotron my-4">
+        <h2 class="display-4">Upgrade to Premium!</h2>
+        <form action="/users/<%= user.id %>/upgrade" method="POST">
+          <script
+            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="pk_test_77z5YrRHm6FkeP46ilOaDsbQ"
+            data-amount="1500"
+            data-name="busdav-blocipedia.com"
+            data-description="Premium User Charge"
+            data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+            data-locale="auto"
+            data-zip-code="false"
+            data-currency="usd">
+          </script>
+        </form>
+      </header>
+
+
+        <h4  class="text-center">Advantages of Premium Membership:</h4>
+
+
+      <hr>
+
+      <section class="row text-center">
+        <section class="col-lg-4">
+          <h4 class="card-title">Be Private</h4>
+          <p class="card-text">Become a premium member reate private wikis that can only be read by you.</p>
+        </section>
+        <section class="col-lg-4">
+          <h4 class="card-title">Pay</h4>
+          <p class="card-text">Pay something and feel good about yourself!</p>
+        </section>
+        <section class="col-lg-4">
+          <h4 class="card-title">Be exclusive</h4>
+          <p class="card-text">Not every member will be a premium member</p>
+        </section>
+      </section>
+
+    </main>
+
+    <% include ../static/partials/baseScripts.ejs %>
+
+  </body>
+</html>
+

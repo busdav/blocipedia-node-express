@@ -173,7 +173,7 @@ describe("routes : users", () => {
     it("should render a view with an upgrade form", (done) => {
       request.get(`${base}${this.user.id}/upgrade`, (err, res, body) => {
         expect(err).toBeNull();
-        expect(body).toContain("Stripe");
+        expect(body).toContain("Charge");
         done();
       });
     });
