@@ -1,0 +1,13 @@
+<form action="/users/<%= user.id %>/upgrade" method="POST">
+  <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key="pk_test_77z5YrRHm6FkeP46ilOaDsbQ"
+    data-amount="15"
+    data-name="Stripe.com"
+    data-description="Example charge"
+    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+    data-locale="auto"
+    data-zip-code="false"
+    data-currency="usd">
+  </script>
+</form>
