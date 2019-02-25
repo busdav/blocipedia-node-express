@@ -10,16 +10,35 @@ const sequelize = require("../../src/db/models/index").sequelize;
 describe("routes : users", () => {
 
   beforeEach((done) => {
+    this.user;
+    this.wiki;
 
     sequelize.sync({force: true})
-    .then(() => {
-      done();
-    })
-    .catch((err) => {
-      console.log(err);
-      done();
-    });
+    .then((res) => {
 
+      User.create({
+        email: "starman@tesla.com",
+        password: "Trekkie4lyfe",
+        role: "standard"
+      })
+      .then((res) => {
+        this.user = res;
+
+        Wiki.create({
+          title: "Winter Games",
+          body: "Post your Winter Games stories.",
+          userId: this.user.id
+        })
+        .then((res) => {
+          this.wiki = res;
+          done();
+        })
+        .catch((err) => {
+          console.log(err);
+          done();
+        });
+      });
+    });
   });
 
   describe("GET /users/sign_up", () => {
@@ -55,7 +74,7 @@ describe("routes : users", () => {
               .then((user) => {
                 expect(user).not.toBeNull();
                 expect(user.email).toBe("user@example.com");
-                expect(user.id).toBe(1);
+                expect(user.id).toBe(2);
                 done();
               })
               .catch((err) => {
@@ -107,30 +126,6 @@ describe("routes : users", () => {
 
   describe("GET /users/:id", () => {
 
-    beforeEach((done) => {
-// #3
-      this.user;
-      this.wiki;
-
-      User.create({
-        email: "starman@tesla.com",
-        password: "Trekkie4lyfe"
-      })
-      .then((res) => {
-        this.user = res;
-
-        Wiki.create({
-          title: "Winter Games",
-          body: "Post your Winter Games stories.",
-          userId: this.user.id
-        })
-        .then((res) => {
-          this.wiki = res;
-          done();
-          })
-        })
-      })
-
     it("should render a view with the selected user", (done) => {
       request.get(`${base}${this.user.id}`, (err, res, body) => {
         expect(err).toBeNull();
@@ -155,21 +150,6 @@ describe("routes : users", () => {
 
   describe("GET /users/upgrade", () => {
 
-
-    beforeEach((done) => {
-      // #3
-            this.user;
-      
-            User.create({
-              email: "starman@tesla.com",
-              password: "Trekkie4lyfe"
-            })
-            .then((res) => {
-              this.user = res;
-              done();
-              })
-            })
-
     it("should render a view with an upgrade form", (done) => {
       request.get(`${base}${this.user.id}/upgrade`, (err, res, body) => {
         expect(err).toBeNull();
@@ -177,7 +157,6 @@ describe("routes : users", () => {
         done();
       });
     });
-
   });
 
 });
