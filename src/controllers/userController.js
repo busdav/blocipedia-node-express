@@ -92,29 +92,43 @@ module.exports = {
   upgrade(req, res, next){
     // Set your secret key: remember to change this to your live secret key in production
     // See your keys here: https://dashboard.stripe.com/account/apikeys
-    var stripe = require("stripe")("pk_test_77z5YrRHm6FkeP46ilOaDsbQ");
+    var stripe = require("stripe")(process.env.STRIPE_API_KEY);
 
     // Token is created using Checkout or Elements!
     // Get the payment token ID submitted by the form:
-    const token = request.body.stripeToken; // Using Express
+    const token = req.body.stripeToken; // Using Express
 
-    (async () => {
-      const charge = await stripe.charges.create({
-        amount: 1500,
-        currency: 'usd',
-        description: 'Premium User Charge',
-        source: token,
-      });
-    })();
-
-    userQueries.upgradeUser(req.params.id, (err, user) => {
-      if(err){
-        req.flash("error", err);
-        res.redirect(`/users/${user.id}/show`);
+    return stripe.charges.create({
+      amount: 1500,
+      currency: 'usd',
+      description: 'Premium User Charge',
+      source: token,
+    })
+    .then((charge) => {
+      if(charge) {
+        userQueries.upgradeUser(req.params.id, (err, user) => {
+          if(err){
+            req.flash("error", err);
+            res.redirect(`/users/${user.id}/upgrade`);
+          } else {
+            req.flash("notice", "You've successfully upgraded!");
+            res.redirect(`/users/${user.id}`);
+          }
+        });
       } else {
-        req.flash("notice", "You've successfully upgraded!");
-        res.redirect(`/users/${user.id}/show`);
+        req.flash("notice", "Payment did not go through - please try again");
+        res.redirect(`/users/${user.id}/upgrade`);
       }
     })
+
+    // From stripe guide:
+    // (async () => {
+    //   const charge = await stripe.charges.create({
+    //     amount: 1500,
+    //     currency: 'usd',
+    //     description: 'Premium User Charge',
+    //     source: token,
+    //   });
+    // })();
   },
 }

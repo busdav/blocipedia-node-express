@@ -75,4 +75,20 @@ module.exports = {
       })
     },
 
+  upgradeUser(id, callback){
+    return User.findByPk(id)
+    .then((user) => {
+      if(!user){
+        return callback("User not found");
+      } 
+      return user.updateAttributes({role: "premium"})
+      .then((res) => {
+        callback(null, user);
+      })
+    })
+    .catch((err) => {
+      callback(err);
+    });
+  },
+
 } 

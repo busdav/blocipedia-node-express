@@ -148,12 +148,23 @@ describe("routes : users", () => {
   });
 
 
-  describe("GET /users/upgrade", () => {
+  describe("GET /users/:id/upgrade", () => {
 
     it("should render a view with an upgrade form", (done) => {
       request.get(`${base}${this.user.id}/upgrade`, (err, res, body) => {
         expect(err).toBeNull();
         expect(body).toContain("Charge");
+        done();
+      });
+    });
+  });
+
+  describe("POST /users/:id/upgrade", () => {
+
+    it("should upgrade a standard user to a premium user and redirect", (done) => {
+      request.post(`${base}${this.user.id}/upgrade`, (err, res, body) => {
+        expect(err).toBeNull();
+        expect(this.user.role).toBe("premium");
         done();
       });
     });
