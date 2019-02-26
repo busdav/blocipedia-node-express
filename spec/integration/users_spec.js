@@ -7,6 +7,7 @@ const Wiki = require("../../src/db/models").Wiki;
 // const Comment = require("../../src/db/models").Comment;
 const sequelize = require("../../src/db/models/index").sequelize;
 
+
 describe("routes : users", () => {
 
   beforeEach((done) => {
@@ -126,6 +127,20 @@ describe("routes : users", () => {
 
   describe("GET /users/:id", () => {
 
+    beforeEach((done) => {
+      request.get({
+        url: "http://localhost:3000/auth/fake",
+        form: {
+          userId: this.user.id,
+          role: "standard",
+        }
+      },
+        (err, res, body) => {
+          done();
+        }
+      );
+    });
+
     it("should render a view with the selected user", (done) => {
       request.get(`${base}${this.user.id}`, (err, res, body) => {
         expect(err).toBeNull();
@@ -150,6 +165,20 @@ describe("routes : users", () => {
 
   describe("GET /users/:id/upgrade", () => {
 
+    beforeEach((done) => {
+      request.get({
+        url: "http://localhost:3000/auth/fake",
+        form: {
+          userId: this.user.id,
+          role: "standard",
+        }
+      },
+        (err, res, body) => {
+          done();
+        }
+      );
+    });
+
     it("should render a view with an upgrade form", (done) => {
       request.get(`${base}${this.user.id}/upgrade`, (err, res, body) => {
         expect(err).toBeNull();
@@ -159,15 +188,165 @@ describe("routes : users", () => {
     });
   });
 
-  describe("POST /users/:id/upgrade", () => {
 
-    it("should upgrade a standard user to a premium user and redirect", (done) => {
-      request.post(`${base}${this.user.id}/upgrade`, (err, res, body) => {
+ 
+   describe("POST /users/:id/downgrade", () => {
+
+    beforeEach((done) => {
+      request.get({
+        url: "http://localhost:3000/auth/fake",
+        form: {
+          userId: this.user.id,
+          role: "premium",
+        }
+      },
+        (err, res, body) => {
+          done();
+        }
+      );
+    });
+    
+    it("should downgrade a premium user to a standard user and redirect", (done) => {
+
+      request.post(`${base}${this.user.id}/downgrade`, (err, res, body) => {
         expect(err).toBeNull();
-        expect(this.user.role).toBe("premium");
+        expect(this.user.role).toBe("standard");
         done();
       });
     });
   });
+
+
+
+
+  // Tried to implement a stripe test, but failed: 
+  
+  // describe("POST /users/:id/upgrade", () => {
+
+  //   beforeEach((done) => {
+  //     request.get({
+  //       url: "http://localhost:3000/auth/fake",
+  //       form: {
+  //         userId: this.user.id,
+  //         role: "standard",
+  //       }
+  //     },
+  //       (err, res, body) => {
+  //         done();
+  //       }
+  //     );
+  //   });
+
+  //   it("should upgrade a standard user to a premium user and redirect", (done) => {
+
+      
+  //     const options = {
+  //       url: `${base}${this.user.id}/upgrade`,
+  //       form: {
+
+  //         // "id": "tok_visa",
+  //         // "object": "token"
+
+  //           "id": "src_1E7zk1B2K1jSrjX4VWwsmSp6",
+  //           "object": "source",
+  //           "ach_credit_transfer": {
+  //             "account_number": "test_52796e3294dc",
+  //             "routing_number": "110000000",
+  //             "fingerprint": "ecpwEzmBOSMOqQTL",
+  //             "bank_name": "TEST BANK",
+  //             "swift_code": "TSTEZ122"
+  //           },
+  //           "amount": null,
+  //           "client_secret": "src_client_secret_EbC8sWBiBMohaf63HD6xoLSs",
+  //           "created": 1551163717,
+  //           "currency": "gbp",
+  //           "flow": "receiver",
+  //           "livemode": false,
+  //           "metadata": {},
+  //           "owner": {
+  //             "address": null,
+  //             "email": "jenny.rosen@example.com",
+  //             "name": null,
+  //             "phone": null,
+  //             "verified_address": null,
+  //             "verified_email": null,
+  //             "verified_name": null,
+  //             "verified_phone": null
+  //           },
+  //           "receiver": {
+  //             "address": "121042882-38381234567890123",
+  //             "amount_charged": 0,
+  //             "amount_received": 0,
+  //             "amount_returned": 0,
+  //             "refund_attributes_method": "email",
+  //             "refund_attributes_status": "missing"
+  //           },
+  //           "statement_descriptor": null,
+  //           "status": "pending",
+  //           "type": "ach_credit_transfer",
+  //           "usage": "reusable"
+
+
+
+  //           // "id": "tok_visa",
+  //           // "object": "token",
+  //           // "card": {
+  //           //   "id": "card_1E7elOB2K1jSrjX4nECGPN2b",
+  //           //   "object": "card",
+  //           //   "address_city": null,
+  //           //   "address_country": null,
+  //           //   "address_line1": null,
+  //           //   "address_line1_check": null,
+  //           //   "address_line2": null,
+  //           //   "address_state": null,
+  //           //   "address_zip": null,
+  //           //   "address_zip_check": null,
+  //           //   "brand": "Visa",
+  //           //   "country": "US",
+  //           //   "cvc_check": "pass",
+  //           //   "dynamic_last4": null,
+  //           //   "exp_month": 10,
+  //           //   "exp_year": 2020,
+  //           //   "funding": "credit",
+  //           //   "last4": "4242",
+  //           //   "metadata": {
+  //           //   },
+  //           //   "name": "asdflaksdjfalksdjf@gmail.com",
+  //           //   "tokenization_method": null
+  //           // },
+  //           // "client_ip": "128.90.22.11",
+  //           // "created": 1551083078,
+  //           // "email": "asdflaksdjfalksdjf@gmail.com",
+  //           // "livemode": false,
+  //           // "type": "card",
+  //           // "used": false
+
+  //         // "email": "starman@tesla.com",
+  //         // "validation_type": "card",
+  //         // "payment_user_agent": "Stripe Checkout v3 checkout-manhattan (stripe.js/9dc17ab)",
+  //         // "referrer": "http://localhost:3000/users/1/upgrade",
+  //         // "card": {
+  //         //   "number": "4242424242424242",
+  //         //   "exp_month": "10",
+  //         //   "exp_year": "20",
+  //         //   "cvc": "123",
+  //         //   "name": "starman@tesla.com"
+  //         // },
+  //         // "time_on_page": "13621",
+  //         // "guid": "6ba5c842-6707-424c-9d3b-794c5b8548c4",
+  //         // "muid": "a930388f-6a13-4238-a9fe-bfe112386a5d",
+  //         // "sid": "258115a6-0bdd-4513-b68e-852f8ae09a6d",
+  //         // "key": "pk_test_77z5YrRHm6FkeP46ilOaDsbQ"
+
+  //       }
+  //     }
+  //     request.post(options, (err, res, body) => {
+  //       expect(err).toBeNull();
+  //       expect(this.user.role).toBe("premium");
+  //       done();
+  //     });
+  //   });
+  // });
+
 
 });

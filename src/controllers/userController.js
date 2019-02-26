@@ -131,4 +131,17 @@ module.exports = {
     //   });
     // })();
   },
+
+  downgrade(req, res, next){
+    userQueries.downgradeUser(req.params.id, (err, user) => {
+      if(err){
+        req.flash("error", err);
+        res.redirect(`/users/${user.id}`);
+      } else {
+        req.flash("notice", "You've successfully downgraded!");
+        res.redirect(`/users/${user.id}`);
+      }
+    });
+  },
+  
 }

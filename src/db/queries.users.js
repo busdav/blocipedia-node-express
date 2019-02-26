@@ -91,4 +91,20 @@ module.exports = {
     });
   },
 
+  downgradeUser(id, callback){
+    return User.findByPk(id)
+    .then((user) => {
+      if(!user){
+        return callback("User not found");
+      } 
+      return user.updateAttributes({role: "standard"})
+      .then((res) => {
+        callback(null, user);
+      })
+    })
+    .catch((err) => {
+      callback(err);
+    });
+  },
+
 } 
