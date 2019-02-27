@@ -10,7 +10,7 @@ describe("routes : wikis", () => {
 
   beforeEach((done) => {
     this.user;
-    this.wiki;
+    this.publicWiki;
 
     sequelize.sync({force: true}).then((res) => {
 
@@ -29,8 +29,22 @@ describe("routes : wikis", () => {
           userId: this.user.id
         })
         .then((wiki) => {
-          this.wiki = wiki;
-          done();
+          this.publicWiki = wiki;
+
+          Wiki.create({
+            title: "Snowman Building",
+            body: "So many carrots!",
+            userId: this.user.id,
+            private: true
+          })
+          .then((wiki) => {
+            this.privateWiki = wiki;
+            done();
+          })
+          .catch((err) => {
+            console.log(err);
+            done();
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -121,7 +135,7 @@ describe("routes : wikis", () => {
         
         describe("GET /wikis/:id", () => {
           it("should render a view with the selected wiki", (done) => {
-            request.get(`${base}${this.wiki.id}`, (err, res, body) => {
+            request.get(`${base}${this.publicWiki.id}`, (err, res, body) => {
               expect(err).toBeNull();
               expect(body).toContain("So much snow!");
               done();
@@ -135,8 +149,8 @@ describe("routes : wikis", () => {
             Wiki.findAll()
             .then((wikis) => {
               const wikiCountBeforeDelete = wikis.length;
-              expect(wikiCountBeforeDelete).toBe(1);
-              request.post(`${base}${this.wiki.id}/destroy`, (err, res, body) => {
+              expect(wikiCountBeforeDelete).toBe(2);
+              request.post(`${base}${this.publicWiki.id}/destroy`, (err, res, body) => {
                 Wiki.findAll()
                 .then((wikis) => {
                   expect(wikis.length).toBe(wikiCountBeforeDelete);
@@ -154,7 +168,7 @@ describe("routes : wikis", () => {
         
         describe("GET /wikis/:id/edit", () => {
           it("should not render a view with an edit wiki form", (done) => {
-            request.get(`${base}${this.wiki.id}/edit`, (err, res, body) => {
+            request.get(`${base}${this.publicWiki.id}/edit`, (err, res, body) => {
               expect(body).not.toContain("Edit Wiki");
               done();
             });
@@ -164,7 +178,7 @@ describe("routes : wikis", () => {
         describe("POST /wikis/:id/update", () => {
           it("should not update the wiki with the given values", (done) => {
             request.post({
-              url: `${base}${this.wiki.id}/update`,
+              url: `${base}${this.publicWiki.id}/update`,
               form: {
                 title: "JavaScript Frameworks",
                 body: "There are a lot of them",
@@ -192,8 +206,12 @@ describe("routes : wikis", () => {
 
 
 
+
+
+
+
     // context of admin user
-    describe("admin user performing CRUD actions on public Wiki", () => {
+    describe("admin user performing CRUD actions on private Wiki", () => {
 
       // #2: before each test in admin user context, send an authentication request
       // to a route we will create to mock an authentication request
@@ -239,13 +257,14 @@ describe("routes : wikis", () => {
 
   describe("POST /wikis/create", () => {
 
-    it("should create a new wiki and redirect", (done) => {
+    it("should create a new private wiki and redirect", (done) => {
        const options = {
          url: `${base}create`,
          form: {
            title: "Watching snow melt",
            body: "Without a doubt my favoriting things to do besides watching paint dry!",
-           userId: this.user.id
+           userId: this.user.id,
+           private: true,
          }
        };
        request.post(options,
@@ -257,6 +276,7 @@ describe("routes : wikis", () => {
              expect(wiki.title).toBe("Watching snow melt");
              expect(wiki.body).toBe("Without a doubt my favoriting things to do besides watching paint dry!");
              expect(wiki.userId).not.toBeNull();
+             expect(wiki.private).toBe(true);
              done();
            })
            .catch((err) => {
@@ -272,10 +292,10 @@ describe("routes : wikis", () => {
 
 
 describe("GET /wikis/:id", () => {
-  it("should render a view with the selected wiki", (done) => {
-    request.get(`${base}${this.wiki.id}`, (err, res, body) => {
+  it("should render a view with the selected private wiki", (done) => {
+    request.get(`${base}${this.privateWiki.id}`, (err, res, body) => {
       expect(err).toBeNull();
-      expect(body).toContain("So much snow!");
+      expect(body).toContain("So many carrots!");
       done();
     });
   });
@@ -283,12 +303,12 @@ describe("GET /wikis/:id", () => {
 
 
 describe("POST /wikis/:id/destroy", () => {
-  it("should delete the wiki with the associated ID", (done) => {
+  it("should delete the private wiki with the associated ID", (done) => {
     Wiki.findAll()
     .then((wikis) => {
       const wikiCountBeforeDelete = wikis.length;
-      expect(wikiCountBeforeDelete).toBe(1);
-      request.post(`${base}${this.wiki.id}/destroy`, (err, res, body) => {
+      expect(wikiCountBeforeDelete).toBe(2);
+      request.post(`${base}${this.privateWiki.id}/destroy`, (err, res, body) => {
         Wiki.findAll()
         .then((wikis) => {
           expect(err).toBeNull();
@@ -307,19 +327,19 @@ describe("POST /wikis/:id/destroy", () => {
 
 describe("GET /wikis/:id/edit", () => {
   it("should render a view with an edit wiki form", (done) => {
-    request.get(`${base}${this.wiki.id}/edit`, (err, res, body) => {
+    request.get(`${base}${this.privateWiki.id}/edit`, (err, res, body) => {
       expect(err).toBeNull();
       expect(body).toContain("Edit Wiki");
-      expect(body).toContain("So much snow!");
+      expect(body).toContain("So many carrots!");
       done();
     });
   });
 });
 
 describe("POST /wikis/:id/update", () => {
-  it("should update the wiki with the given values", (done) => {
+  it("should update the private wiki with the given values", (done) => {
     request.post({
-      url: `${base}${this.wiki.id}/update`,
+      url: `${base}${this.privateWiki.id}/update`,
       form: {
         title: "JavaScript Frameworks",
         body: "There are a lot of them",
@@ -328,7 +348,7 @@ describe("POST /wikis/:id/update", () => {
     }, (err, res, body) => {
       expect(err).toBeNull();
       Wiki.findOne({
-        where: {id: 1}
+        where: {id: 2}
       })
       .then((wiki) => {
         expect(wiki.title).toBe("JavaScript Frameworks");
@@ -348,15 +368,22 @@ describe("POST /wikis/:id/update", () => {
 
 
 
-    // context of standard user performing CRUD actions on own Wiki
-    describe("standard user performing CRUD actions on own Wiki", () => {
+
+
+
+
+    // context of premium user
+    describe("premium user performing CRUD actions on private Wiki", () => {
+
+      // #2: before each test in premium user context, send an authentication request
+      // to a route we will create to mock an authentication request
   
       beforeEach((done) => {
         request.get({
           url: "http://localhost:3000/auth/fake",
           form: {
             userId: this.user.id,
-            role: "standard",
+            role: "premium",
           }
         },
           (err, res, body) => {
@@ -392,13 +419,14 @@ describe("POST /wikis/:id/update", () => {
 
   describe("POST /wikis/create", () => {
 
-    it("should create a new wiki and redirect", (done) => {
+    it("should create a new private wiki and redirect", (done) => {
        const options = {
          url: `${base}create`,
          form: {
            title: "Watching snow melt",
            body: "Without a doubt my favoriting things to do besides watching paint dry!",
-           userId: this.user.id
+           userId: this.user.id,
+           private: true,
          }
        };
        request.post(options,
@@ -410,6 +438,7 @@ describe("POST /wikis/:id/update", () => {
              expect(wiki.title).toBe("Watching snow melt");
              expect(wiki.body).toBe("Without a doubt my favoriting things to do besides watching paint dry!");
              expect(wiki.userId).not.toBeNull();
+             expect(wiki.private).toBe(true);
              done();
            })
            .catch((err) => {
@@ -423,11 +452,12 @@ describe("POST /wikis/:id/update", () => {
   });
 
 
+
 describe("GET /wikis/:id", () => {
-  it("should render a view with the selected wiki", (done) => {
-    request.get(`${base}${this.wiki.id}`, (err, res, body) => {
+  it("should render a view with the selected private wiki", (done) => {
+    request.get(`${base}${this.privateWiki.id}`, (err, res, body) => {
       expect(err).toBeNull();
-      expect(body).toContain("So much snow!");
+      expect(body).toContain("So many carrots!");
       done();
     });
   });
@@ -435,12 +465,12 @@ describe("GET /wikis/:id", () => {
 
 
 describe("POST /wikis/:id/destroy", () => {
-  it("should delete the wiki with the associated ID", (done) => {
+  it("should delete the private wiki with the associated ID", (done) => {
     Wiki.findAll()
     .then((wikis) => {
       const wikiCountBeforeDelete = wikis.length;
-      expect(wikiCountBeforeDelete).toBe(1);
-      request.post(`${base}${this.wiki.id}/destroy`, (err, res, body) => {
+      expect(wikiCountBeforeDelete).toBe(2);
+      request.post(`${base}${this.privateWiki.id}/destroy`, (err, res, body) => {
         Wiki.findAll()
         .then((wikis) => {
           expect(err).toBeNull();
@@ -459,19 +489,19 @@ describe("POST /wikis/:id/destroy", () => {
 
 describe("GET /wikis/:id/edit", () => {
   it("should render a view with an edit wiki form", (done) => {
-    request.get(`${base}${this.wiki.id}/edit`, (err, res, body) => {
+    request.get(`${base}${this.privateWiki.id}/edit`, (err, res, body) => {
       expect(err).toBeNull();
       expect(body).toContain("Edit Wiki");
-      expect(body).toContain("So much snow!");
+      expect(body).toContain("So many carrots!");
       done();
     });
   });
 });
 
 describe("POST /wikis/:id/update", () => {
-  it("should update the wiki with the given values", (done) => {
+  it("should update the private wiki with the given values", (done) => {
     request.post({
-      url: `${base}${this.wiki.id}/update`,
+      url: `${base}${this.privateWiki.id}/update`,
       form: {
         title: "JavaScript Frameworks",
         body: "There are a lot of them",
@@ -480,7 +510,7 @@ describe("POST /wikis/:id/update", () => {
     }, (err, res, body) => {
       expect(err).toBeNull();
       Wiki.findOne({
-        where: {id: 1}
+        where: {id: 2}
       })
       .then((wiki) => {
         expect(wiki.title).toBe("JavaScript Frameworks");
@@ -501,8 +531,11 @@ describe("POST /wikis/:id/update", () => {
 
 
 
-    // context of standard user performing CRUD actions on other user's public Wiki
-    describe("standard user performing CRUD actions on other user's public Wiki", () => {
+
+
+
+    // context of standard user performing CRUD actions on other user's  Wiki
+    describe("standard user performing CRUD actions on other user's Wiki", () => {
 
       beforeEach((done) => {
         User.create({
@@ -529,8 +562,8 @@ describe("POST /wikis/:id/update", () => {
 
 
 describe("GET /wikis/:id", () => {
-  it("should render a view with the selected wiki", (done) => {
-    request.get(`${base}${this.wiki.id}`, (err, res, body) => {
+  it("should render a view with the selected public wiki", (done) => {
+    request.get(`${base}${this.publicWiki.id}`, (err, res, body) => {
       expect(err).toBeNull();
       expect(body).toContain("So much snow!");
       done();
@@ -538,14 +571,22 @@ describe("GET /wikis/:id", () => {
   });
 });
 
+describe("GET /wikis/:id", () => {
+  it("should not render a view with the selected private wiki", (done) => {
+    request.get(`${base}${this.privateWiki.id}`, (err, res, body) => {
+      expect(body).not.toContain("So many carrots!");
+      done();
+    });
+  });
+});
 
 describe("POST /wikis/:id/destroy", () => {
   it("should not delete the wiki with the associated ID", (done) => {
     Wiki.findAll()
     .then((wikis) => {
       const wikiCountBeforeDelete = wikis.length;
-      expect(wikiCountBeforeDelete).toBe(1);
-      request.post(`${base}${this.wiki.id}/destroy`, (err, res, body) => {
+      expect(wikiCountBeforeDelete).toBe(2);
+      request.post(`${base}${this.publicWiki.id}/destroy`, (err, res, body) => {
         Wiki.findAll()
         .then((wikis) => {
           expect(wikis.length).toBe(wikiCountBeforeDelete);
@@ -562,8 +603,8 @@ describe("POST /wikis/:id/destroy", () => {
 
 
 describe("GET /wikis/:id/edit", () => {
-  it("should render a view with an edit wiki form", (done) => {
-    request.get(`${base}${this.wiki.id}/edit`, (err, res, body) => {
+  it("should render a view with an edit public wiki form", (done) => {
+    request.get(`${base}${this.publicWiki.id}/edit`, (err, res, body) => {
       expect(err).toBeNull();
       expect(body).toContain("Edit Wiki");
       expect(body).toContain("So much snow!");
@@ -572,14 +613,23 @@ describe("GET /wikis/:id/edit", () => {
   });
 });
 
+describe("GET /wikis/:id/edit", () => {
+  it("should not render a view with an edit private wiki form", (done) => {
+    request.get(`${base}${this.privateWiki.id}/edit`, (err, res, body) => {
+      expect(body).not.toContain("Edit Wiki");
+      done();
+    });
+  });
+});
+
+
 describe("POST /wikis/:id/update", () => {
   it("should update the wiki with the given values", (done) => {
     request.post({
-      url: `${base}${this.wiki.id}/update`,
+      url: `${base}${this.publicWiki.id}/update`,
       form: {
         title: "JavaScript Frameworks",
         body: "There are a lot of them",
-        userId: this.user.id
       }
     }, (err, res, body) => {
       expect(err).toBeNull();
@@ -598,5 +648,33 @@ describe("POST /wikis/:id/update", () => {
     });
   });
 });
+
+describe("POST /wikis/:id/update", () => {
+  it("should not update the private wiki with the given values", (done) => {
+    request.post({
+      url: `${base}${this.privateWiki.id}/update`,
+      form: {
+        title: "JavaScript Frameworks",
+        body: "There are a lot of them",
+      }
+    }, (err, res, body) => {
+      expect(err).toBeNull();
+      Wiki.findOne({
+        where: {id: 2}
+      })
+      .then((wiki) => {
+        expect(wiki.title).not.toBe("JavaScript Frameworks");
+        expect(wiki.body).not.toBe("There are a lot of them");
+        done();
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+  });
+});
+
 });
 });
+

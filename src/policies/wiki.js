@@ -15,10 +15,11 @@ module.exports = class WikiPolicy extends ApplicationPolicy {
   }
 
   edit() {
-    if(this._isPrivate()) {
-      return this._isAdmin() || this._isPremium() || this._isOwner();
-    } else {
+    if(this._isPublic()) {
       return this.new();
+    }
+    if(this._isPrivate()) {
+      return (this._isAdmin() || this._isPremium() || this._isOwner());
     }
   }
 
