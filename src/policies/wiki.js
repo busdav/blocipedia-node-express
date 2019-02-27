@@ -3,15 +3,23 @@ const ApplicationPolicy = require("./application");
 module.exports = class WikiPolicy extends ApplicationPolicy {
   
   new() {
-    return (this._isAdmin() || this._isStandard());
+    return this.user;
   }
 
   create() {
-    return this.new();
+    if(this._isPrivate()) {
+      return this._isAdmin() || this._isPremium();
+    } else {
+      return this.new();
+    }
   }
 
   edit() {
-    return this.new() && this.record;
+    if(this._isPrivate()) {
+      return this._isAdmin() || this._isPremium() || this._isOwner();
+    } else {
+      return this.new();
+    }
   }
 
   update() {
@@ -20,7 +28,7 @@ module.exports = class WikiPolicy extends ApplicationPolicy {
 
  // #5
   destroy() {
-    return this.new() && this.record && (this._isOwner() || this._isAdmin());
+    return this._isOwner() || this._isAdmin();
   }
   
 }

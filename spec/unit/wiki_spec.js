@@ -33,12 +33,13 @@ describe("Wiki", () => {
 
  describe("#create()", () => {
 
-  it("should create a wiki object with a title, body, and assigned user", (done) => {
+  it("should create a private wiki object with a title, body, and assigned user", (done) => {
 //#1
     Wiki.create({
       title: "Pros of Cryosleep during the long journey",
       body: "1. Not having to answer the 'are we there yet?' question.",
-      userId: this.user.id
+      userId: this.user.id,
+      private: true
     })
     .then((wiki) => {
 
@@ -46,6 +47,7 @@ describe("Wiki", () => {
       expect(wiki.title).toBe("Pros of Cryosleep during the long journey");
       expect(wiki.body).toBe("1. Not having to answer the 'are we there yet?' question.");
       expect(wiki.userId).toBe(this.user.id);
+      expect(wiki.private).toBe(true);
       done();
 
     })

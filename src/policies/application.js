@@ -22,10 +22,18 @@ module.exports = class ApplicationPolicy {
   _isPremium() {
     return this.user && this.user.role == "premium";
   }
+
+  _isPrivate() {
+    return this.record && this.record.private == true;
+  }
+
+  _isPublic() {
+    return this.record && this.record.private == false;
+  }
  
   // #3
    new() {
-     return this.user != null;
+     return this.user;
    }
  
    create() {
@@ -38,7 +46,7 @@ module.exports = class ApplicationPolicy {
  
   // #4
    edit() {
-     return this.new() && this.record && (this._isOwner() || this._isAdmin());
+     return this._isOwner() || this._isAdmin();
    }
  
    update() {

@@ -97,7 +97,7 @@ describe("routes : wikis", () => {
                  form: {
                    title: "Watching snow melt",
                    body: "Without a doubt my favoriting things to do besides watching paint dry!",
-                   userId: this.user.id
+                   userId: 0
                  }
                };
                request.post(options,
@@ -168,7 +168,7 @@ describe("routes : wikis", () => {
               form: {
                 title: "JavaScript Frameworks",
                 body: "There are a lot of them",
-                userId: this.user.id
+                userId: 0
               }
             }, (err, res, body) => {
               Wiki.findOne({

@@ -24,13 +24,15 @@ module.exports = {
   },
 
   create(req, res, next){
-    const authorized = new Authorizer(req.user).create();
+
+    let newWiki = {
+      title: req.body.title,
+      body: req.body.body,
+      userId: req.user.id,
+      private: req.body.private
+    };
+    const authorized = new Authorizer(req.user, newWiki).create();
     if(authorized) {
-      let newWiki = {
-        title: req.body.title,
-        body: req.body.body,
-        userId: req.user.id
-      };
       wikiQueries.addWiki(newWiki, (err, wiki) => {
         if(err){
           res.redirect(500, "/wikis/new");
