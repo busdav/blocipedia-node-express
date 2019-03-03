@@ -36,5 +36,25 @@ module.exports = (sequelize, DataTypes) => {
         }
       });
 
+  Wiki.addScope("index", (user) => {
+    if(user) {
+      if(user.role == "admin" || user.role == "premium") {
+        return {
+          order: [["createdAt", "DESC"]]
+        }
+      } else {
+        return {
+          where: { private: false },
+          order: [["createdAt", "DESC"]]
+        }
+      }
+    } else {
+      return {
+        where: { private: false },
+        order: [["createdAt", "DESC"]]
+      }
+    }
+  });
+
   return Wiki;
 };

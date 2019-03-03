@@ -80,12 +80,13 @@ describe("routes : wikis", () => {
            });
     
            describe("GET /wikis", () => {
-            it("should return a status code 200 and all wikis", (done) => {
+            it("should return a status code 200 and all public wikis", (done) => {
               request.get(base, (err, res, body) => {
                 expect(err).toBeNull();
                 expect(res.statusCode).toBe(200); 
                 expect(body).toContain("Wikis");
                 expect(body).toContain("Snowball Fighting");
+                expect(body).not.toContain("Snowman Building");
                 done();
               });
             });
@@ -399,6 +400,7 @@ describe("POST /wikis/:id/update", () => {
         expect(res.statusCode).toBe(200); 
         expect(body).toContain("Wikis");
         expect(body).toContain("Snowball Fighting");
+        expect(body).toContain("Snowman Building");
         done();
       });
     });
@@ -559,6 +561,20 @@ describe("POST /wikis/:id/update", () => {
         });
       });
  
+
+
+      describe("GET /wikis", () => {
+        it("should return a status code 200 and only all public wikis", (done) => {
+          request.get(base, (err, res, body) => {
+            expect(err).toBeNull();
+            expect(res.statusCode).toBe(200); 
+            expect(body).toContain("Wikis");
+            expect(body).toContain("Snowball Fighting");
+            expect(body).not.toContain("Snowman Building");
+            done();
+          });
+        });
+      }); 
 
 
 describe("GET /wikis/:id", () => {
