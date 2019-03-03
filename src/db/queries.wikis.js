@@ -81,4 +81,20 @@ updateWiki(req, updatedWiki, callback){
   });
 },
 
+  downgradeWiki(req, callback){
+    Wiki.update(
+      { private: false },
+      { where: { userId: req.params.id }}
+    )
+    // .spread((affectedCount, affectedRows) => {
+    //   return Wiki.findAll();
+    // })
+    .then(() => {
+      callback(null, req.user);
+    })
+    .catch((err) => {
+      callback(err);
+    });
+  },
+
 }

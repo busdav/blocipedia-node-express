@@ -1,4 +1,5 @@
 const userQueries = require("../db/queries.users.js");
+const wikiQueries = require("../db/queries.wikis.js");
 const passport = require("passport");
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -132,16 +133,23 @@ module.exports = {
     // })();
   },
 
+
   downgrade(req, res, next){
     userQueries.downgradeUser(req.params.id, (err, user) => {
       if(err){
         req.flash("error", err);
         res.redirect(`/users/${user.id}`);
-      } else {
+      }
+    });
+    wikiQueries.downgradeWiki(req, (err, user) => {
+      if(err){
+        req.flash("error", err);
+        res.redirect(`/users/${user.id}`);
+      }
+      else {
         req.flash("notice", "You've successfully downgraded!");
         res.redirect(`/users/${user.id}`);
       }
     });
   },
-  
 }

@@ -1,6 +1,5 @@
 const User = require("./models").User;
 const Wiki = require("./models").Wiki;
-// const Comment = require("./models").Comment;
 const bcrypt = require("bcryptjs");
 // const sgMail = require('@sendgrid/mail');
 // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -95,7 +94,7 @@ module.exports = {
     return User.findByPk(id)
     .then((user) => {
       if(!user){
-        return callback("User not found");
+       return  callback("User not found");
       } 
       return user.updateAttributes({role: "standard"})
       .then((res) => {
