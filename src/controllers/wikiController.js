@@ -56,7 +56,7 @@ module.exports = {
           res.render("wikis/show", {wiki});
         } else {
           req.flash("You are not authorized to do that.")
-          res.redirect(`/wikis/${req.params.id}`)
+          res.redirect(`/wikis`)
         }
       }
     });

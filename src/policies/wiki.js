@@ -27,6 +27,14 @@ module.exports = class WikiPolicy extends ApplicationPolicy {
     return this.edit();
   }
 
+  show() {
+    if(this._isPrivate()) {
+      return this._isAdmin() || this._isPremium() || this._isOwner();
+    } else {
+      return true;
+    }
+  }
+
  // #5
   destroy() {
     return this._isOwner() || this._isAdmin();
