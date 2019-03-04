@@ -1,5 +1,6 @@
 const wikiQueries = require("../db/queries.wikis.js");
 const Authorizer = require("../policies/wiki");
+const markdown = require("markdown").markdown;
 
 module.exports = {
 
@@ -53,7 +54,8 @@ module.exports = {
       } else {
         const authorized = new Authorizer(req.user, wiki).show();
         if(authorized) {
-          res.render("wikis/show", {wiki});
+          const wikiMarkdown = markdown.toHTML(wiki.body);
+          res.render("wikis/show", {wiki, wikiMarkdown});
         } else {
           req.flash("You are not authorized to do that.")
           res.redirect(`/wikis`)
