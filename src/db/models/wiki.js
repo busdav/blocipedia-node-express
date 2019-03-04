@@ -27,8 +27,8 @@ module.exports = (sequelize, DataTypes) => {
     Wiki.belongsToMany(models.User, {
       through: UserWikis,
       as: "collabWikis",
-      foreignKey: "collabId",
-      otherKey: "wikiId"
+      foreignKey: "wikiId",
+      otherKey: "collabId"
     });
   };
 
