@@ -82,43 +82,64 @@ describe("Wiki", () => {
 
 });
 
-describe("#setUser()", () => {
+  describe("#setUser()", () => {
 
-  it("should associate a user and a wiki together", (done) => {
+    it("should associate a user and a wiki together", (done) => {
 
-// #1
-    User.create({
-      email: "starman222@tesla.com",
-      password: "Trekkie4lyfe"
-    })
-    .then((newUser) => {
+  // #1
+      User.create({
+        email: "starman222@tesla.com",
+        password: "Trekkie4lyfe"
+      })
+      .then((newUser) => {
 
-// #2
-      expect(this.wiki.userId).toBe(this.user.id);
-// #3
-      this.wiki.setUser(newUser)
-      .then((wiki) => {
-// #4
-        expect(wiki.userId).toBe(newUser.id);
-        done();
+  // #2
+        expect(this.wiki.userId).toBe(this.user.id);
+  // #3
+        this.wiki.setUser(newUser)
+        .then((wiki) => {
+  // #4
+          expect(wiki.userId).toBe(newUser.id);
+          done();
 
-      });
-    })
-  });
-
-});
-
-describe("#getUser()", () => {
-
-  it("should return the associated user", (done) => {
-
-    this.wiki.getUser()
-    .then((associatedUser) => {
-      expect(associatedUser.email).toBe("starman@tesla.com");
-      done();
+        });
+      })
     });
-
   });
 
-});
+  describe("#getUser()", () => {
+
+    it("should return the associated user", (done) => {
+
+      this.wiki.getUser()
+      .then((associatedUser) => {
+        expect(associatedUser.email).toBe("starman@tesla.com");
+        done();
+      });
+
+    });
+  });
+
+
+
+  describe("#addUser()", () => {
+
+    it("should associate an additional user with a wiki", (done) => {
+      User.create({
+        email: "starman222@tesla.com",
+        password: "Trekkie4lyfe"
+      })
+      .then((newUser) => {
+
+        expect(this.wiki.userId).toBe(this.user.id);
+
+        this.wiki.addUser(newUser)
+        .then((wiki) => {
+          expect(wiki.userId).toBe(this.user.id);
+          expect(wiki.collabId).toBe(newUser.id);
+          done();
+        });
+      })
+    });
+  });
 });

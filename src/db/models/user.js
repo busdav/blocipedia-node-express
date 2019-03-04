@@ -24,6 +24,12 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId",
       as: "wikis"
     });
+    User.belongsToMany(models.Wiki, {
+      through: UserWikis,
+      as: "collabWikis",
+      foreignKey: "collabId",
+      otherKey: "wikiId"
+    });
   };
 
   User.prototype.isAdmin = function() {

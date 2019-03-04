@@ -24,6 +24,12 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId",
       onDelete: "CASCADE"
     });
+    Wiki.belongsToMany(models.User, {
+      through: UserWikis,
+      as: "collabWikis",
+      foreignKey: "collabId",
+      otherKey: "wikiId"
+    });
   };
 
   Wiki.addScope("lastFiveFor", (userId) => {
