@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const UserWikis = sequelize.define('UserWikis', {
-    userId: {
+    collaboratorId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },

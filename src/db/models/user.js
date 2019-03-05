@@ -20,15 +20,16 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   User.associate = function(models) {
     // associations can be defined here
-    User.hasMany(models.Wiki, {
-      foreignKey: "userId",
+    User.hasMany(models.Wiki, {  // enables user.getWikis(); (and 'set') (get 'Wikis' because we specified 'as: "wikis"' - otherwise, by default, it would be 'getWiki()')
+      foreignKey: "userId", // using hasMany, the fk is placed on the TARGET model, here Wiki
       as: "wikis"
     });
-    User.belongsToMany(models.Wiki, {
-      through: UserWikis,
+    User.belongsToMany(models.Wiki, { // enables user.getCollabWikis()
+      through: models.UserWikis,
       as: "collabWikis",
-      foreignKey: "collabId",
-      otherKey: "wikiId"
+      foreignKey: "collaboratorId", // source model key in 'through' relation
+      otherKey: "wikiId", // target model key in 'through' relation
+      onDelete: "CASCADE"
     });
   };
 

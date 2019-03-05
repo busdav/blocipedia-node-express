@@ -15,20 +15,27 @@ module.exports = (sequelize, DataTypes) => {
     },
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      onDelete: "CASCADE", // delete wiki if parent user is deleted
+      references: {        // association information
+        model: "Users",   // table name
+        key: "id",         // attribute to use
+        as: "userId"      // reference as userId
+      },
     }
   }, {});
   Wiki.associate = function(models) {
     // associations can be defined here
-    Wiki.belongsTo(models.User, {
-      foreignKey: "userId",
+    Wiki.belongsTo(models.User, { //enables wiki.getUser(); (and 'set') (get 'User' because of first parameter passed to 'define' of User model, and we didn't otherwise specify 'as: ...')
+      foreignKey: "userId", // using belongsTo, the fk is placed on the SOURCE model, here Wiki
       onDelete: "CASCADE"
     });
-    Wiki.belongsToMany(models.User, {
-      through: UserWikis,
-      as: "collabWikis",
-      foreignKey: "wikiId",
-      otherKey: "collabId"
+    Wiki.belongsToMany(models.User, { // enables wiki.getCollabUsers()
+      through: models.UserWikis,
+      as: "collabUsers",
+      foreignKey: "wikiId", // source model key in 'through' relation
+      otherKey: "collaboratorId", // target model key in 'through' relation
+      onDelete: "CASCADE"
     });
   };
 

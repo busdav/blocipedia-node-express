@@ -12,7 +12,8 @@ describe("Wiki", () => {
 
       User.create({
         email: "starman@tesla.com",
-        password: "Trekkie4lyfe"
+        password: "Trekkie4lyfe",
+        role: "premium"
       })
       .then((user) => {
         this.user = user; //store the user
@@ -20,7 +21,8 @@ describe("Wiki", () => {
         Wiki.create({
           title: "Expeditions to Alpha Centauri",
           body: "A compilation of reports from recent visits to the star system.",
-          userId: this.user.id
+          userId: this.user.id,
+          private: true
         })
         .then((wiki) => {
           this.wiki = wiki; //store the wiki
@@ -122,7 +124,7 @@ describe("Wiki", () => {
 
 
 
-  describe("#addUser()", () => {
+  describe("#addCollabUsers()", () => {
 
     it("should associate an additional user with a wiki", (done) => {
       User.create({
@@ -131,12 +133,10 @@ describe("Wiki", () => {
       })
       .then((newUser) => {
 
-        expect(this.wiki.userId).toBe(this.user.id);
-
-        this.wiki.addUser(newUser)
+        this.wiki.addCollabUser(newUser)
         .then((wiki) => {
           expect(wiki.userId).toBe(this.user.id);
-          expect(wiki.collabId).toBe(newUser.id);
+          expect(wiki.collaboratorId).toBe(newUser.id);
           done();
         });
       })

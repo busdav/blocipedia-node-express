@@ -30,12 +30,12 @@ module.exports = {
       },
       userId: {
         type: Sequelize.INTEGER,
-        onDelete: "CASCADE", // delete post if parent topic is deleted
         allowNull: false,    // validation to prevent null value
+        onDelete: "CASCADE", // delete wiki if parent user is deleted
         references: {        // association information
           model: "Users",   // table name
           key: "id",         // attribute to use
-          as: "userId"      // reference as topicId
+          as: "userId"      // reference as userId
         },
       }
     });

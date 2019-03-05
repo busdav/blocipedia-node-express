@@ -8,11 +8,15 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: {
-        type: Sequelize.INTEGER
+      collaboratorId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        onDelete: "CASCADE"
       },
       wikiId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        onDelete: "CASCADE"
       },
       createdAt: {
         allowNull: false,
