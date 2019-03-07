@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "CASCADE"
     });
     Wiki.belongsToMany(models.User, { // enables wiki.getCollabUsers()
-      through: models.UserWikis,
+      through: models.UserWiki,
       as: "collabUsers",
       foreignKey: "wikiId", // source model key in 'through' relation
       otherKey: "collaboratorId", // target model key in 'through' relation

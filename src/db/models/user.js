@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       as: "wikis"
     });
     User.belongsToMany(models.Wiki, { // enables user.getCollabWikis()
-      through: models.UserWikis,
+      through: models.UserWiki,
       as: "collabWikis",
       foreignKey: "collaboratorId", // source model key in 'through' relation
       otherKey: "wikiId", // target model key in 'through' relation

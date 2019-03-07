@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const UserWikis = sequelize.define('UserWikis', {
+  const UserWiki = sequelize.define('UserWiki', {
     collaboratorId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     }
   }, {});
-  UserWikis.associate = function(models) {
+  UserWiki.associate = function(models) {
     // associations can be defined here
   };
-  return UserWikis;
+  return UserWiki;
 };
