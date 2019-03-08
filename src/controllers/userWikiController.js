@@ -3,37 +3,36 @@ const wikiQueries = require("../db/queries.wikis.js");
 
 module.exports = {
 
-  // create(req, res, next){
-  //   //#1
-  //        let newUser = {
-  //          email: req.body.email,
-  //          password: req.body.password,
-  //          passwordConfirmation: req.body.passwordConfirmation
-  //        };
-  //   // #2
-  //        userQueries.createUser(newUser, (err, user) => {
-  //          if(err){
-  //            req.flash("error", err);
-  //            res.redirect("/users/sign_up");
-  //          } else {
-    
-  //   // #3
-  //           const msg = {
-  //             to: newUser.email,
-  //             from: 'test@example.com',
-  //             subject: 'User Confirmation',
-  //             text: 'Welcome to Blocipedia',
-  //             html: '<strong>Please login to your account to confirm membership!</strong>',
-  //           };
-  //           sgMail.send(msg);
-            
-  //            passport.authenticate("local")(req, res, () => {
-  //              req.flash("notice", "You've successfully signed in!");
-  //              res.redirect("/");
-  //            });
-  //          }
-  //        });
-  //      },   
+  add(req, res, next){
+
+    let newCollab = {
+      collabEmail: req.body.collabEmail,
+    };
+
+    userQueries.addCollab(req, newCollab, (err, collaboration) => {
+      if(err || collaboration == null) {
+        res.redirect(500, `wikis/${req.params.id}/edit`);
+      } else {
+        res.redirect(303, `wikis/${req.params.id}`);
+      }
+    });
+  },
+
+  // edit(req, res, next){
+  //   wikiQueries.getWiki(req.params.id, (err, wiki) => {
+  //     if(err || wiki == null){
+  //       res.redirect(404, "/");
+  //     } else {
+  //       const authorized = new Authorizer(req.user, wiki).edit();
+  //       if(authorized) {
+  //         res.render("wikis/edit", {wiki});
+  //       } else {
+  //         req.flash("You are not authorized to do that.")
+  //         res.redirect(`/wikis/${req.params.id}`)
+  //       }
+  //     }
+  //   });
+  // },
 
   // show(req, res, next){
 
