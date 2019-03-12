@@ -24,9 +24,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId", // using hasMany, the fk is placed on the TARGET model, here Wiki
       as: "wikis"
     });
-    User.belongsToMany(models.Wiki, { // enables user.getCollabWikis()
+    User.belongsToMany(models.Wiki, { // enables user.getCollaborations()
       through: models.UserWiki,
-      as: "collabWikis",
+      as: "collaborations",
       foreignKey: "collaboratorId", // source model key in 'through' relation
       otherKey: "wikiId", // target model key in 'through' relation
       onDelete: "CASCADE"

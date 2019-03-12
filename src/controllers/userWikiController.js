@@ -3,15 +3,15 @@ const wikiQueries = require("../db/queries.wikis.js");
 
 module.exports = {
 
-  add(req, res, next){
+  create(req, res, next){
 
-    let newCollab = {
-      collabEmail: req.body.collabEmail,
+    let newCollaborator = {
+      collaboratorEmail: req.body.collaboratorEmail,
     };
 
-    userQueries.addCollab(req, newCollab, (err, collaboration) => {
+    userQueries.createCollaboration(req, newCollaborator, (err, collaboration) => {
       if(err || collaboration == null) {
-        res.redirect(500, `wikis/${req.params.id}/edit`);
+        res.redirect(500, `wikis/${req.params.id}/edit`); // would this be `wikiId` because I defined it so in route?
       } else {
         res.redirect(303, `wikis/${req.params.id}`);
       }

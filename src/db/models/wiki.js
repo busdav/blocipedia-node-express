@@ -30,9 +30,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId", // using belongsTo, the fk is placed on the SOURCE model, here Wiki
       onDelete: "CASCADE"
     });
-    Wiki.belongsToMany(models.User, { // enables wiki.getCollabUsers()
+    Wiki.belongsToMany(models.User, { // enables wiki.getCollaborations()
       through: models.UserWiki,
-      as: "collabUsers",
+      as: "collaborations",
       foreignKey: "wikiId", // source model key in 'through' relation
       otherKey: "collaboratorId", // target model key in 'through' relation
       onDelete: "CASCADE"

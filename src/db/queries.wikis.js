@@ -1,4 +1,5 @@
 const Wiki = require("./models").Wiki;
+const UserWiki = require("./models").UserWiki;
 const User = require("./models").User;
 const Authorizer = require("../policies/wiki");
 
@@ -34,6 +35,31 @@ module.exports = {
       callback(err);
     })
   },
+
+
+  // getWiki(id, callback){
+  //   let result = {};
+  //   Wiki.findByPk(id)
+  //   .then((wiki) => {
+  //     if(!wiki) {
+  //       callback(404);
+  //     } else {
+  //       result["wiki"] = wiki;
+
+  //       UserWiki.scope({method: ["collaborationsForWiki", id]}).all()
+  //       .then((collaborations) => {
+  //         result["collaborations"] = collaborations;
+  //         callback(null, result);
+  //       })
+  //       .catch((err) => {
+  //         callback(err);
+  //       })
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     callback(err);
+  //   })
+  // },
 
   deleteWiki(req, callback){
     return Wiki.findByPk(req.params.id)

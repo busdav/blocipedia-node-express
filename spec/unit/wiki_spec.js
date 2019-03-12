@@ -124,7 +124,7 @@ describe("Wiki", () => {
 
 
 
-  describe("#addCollabUsers()", () => {
+  describe("#create()", () => {  // move this to collaboration test file
 
     it("should associate an additional user with a wiki", (done) => {
       User.create({
@@ -133,7 +133,7 @@ describe("Wiki", () => {
       })
       .then((newUser) => {
 
-        this.wiki.addCollabUser(newUser)
+        this.wiki.setCollaborations(newUser)
         .then((wiki) => {
           expect(wiki.userId).toBe(this.user.id);
           expect(wiki.collaboratorId).toBe(newUser.id);
