@@ -1,5 +1,7 @@
 const userQueries = require("../db/queries.users.js");
 const wikiQueries = require("../db/queries.wikis.js");
+const userWikiQueries = require("../db/queries.userWikis.js");
+
 
 module.exports = {
 
@@ -9,14 +11,19 @@ module.exports = {
       collaboratorEmail: req.body.collaboratorEmail,
     };
 
-    userQueries.createCollaboration(req, newCollaborator, (err, collaboration) => {
+    userWikiQueries.createCollaboration(req, newCollaborator, (err, collaboration) => {
       if(err || collaboration == null) {
-        res.redirect(500, `wikis/${req.params.id}/edit`); // would this be `wikiId` because I defined it so in route?
+        // req.flash("error", "No user found with that ID."); // would need amendment to messages.ejs for that
+        req.flash("notice", err);
+        // res.redirect(500, `/wikis/${req.params.wikiId}/edit`); 
+        // if I remove the error code, there won't be a page in between displaying the error code (e.g. "internal server error" for 500)
+        res.redirect(`/wikis/${req.params.wikiId}/edit`); // note the leading slash, which makes it relative to ROOT, rather than this path
       } else {
-        res.redirect(303, `wikis/${req.params.id}`);
+        res.redirect(303, `/wikis/${req.params.wikiId}`);
       }
-    });
-  },
+  })
+},
+
 
   // edit(req, res, next){
   //   wikiQueries.getWiki(req.params.id, (err, wiki) => {

@@ -15,8 +15,8 @@ module.exports = {
       if (req.user.email == user.email){
         return callback("Cannot add yourself as a collaborator!");
       }
-      const authorized = new Authorizer(req.user, wiki).create();
-      if(authorized) {
+      // const authorized = new Authorizer(req.user, wiki).create();
+      // if(authorized) {
         
         UserWiki.findAll({
           where: {
@@ -43,10 +43,10 @@ module.exports = {
         .catch((err)=>{
           callback(err, null);
         })
-      } else {
-        req.flash("notice", "You are not authorized to do that.");
-        callback("Forbidden");
-      }
+      // } else {
+      //   req.flash("notice", "You are not authorized to do that.");
+      //   callback("Forbidden");
+      // }
     })
     .catch((err)=>{
       callback(err, null);
