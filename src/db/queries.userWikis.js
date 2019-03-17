@@ -43,7 +43,7 @@ module.exports = {
               })
             } else {
               req.flash("notice", "You are not authorized to do that.");
-              callback("Forbidden");
+              callback(401);
             }
         })
         .catch((err)=>{
@@ -56,6 +56,32 @@ module.exports = {
   })
   .catch((err)=>{
     callback(err, null);
+  })
+},
+
+deleteCollaboration(req, callback){
+  return UserWiki.findOne({ where: { collaboratorId: req.params.collaboratorId, wikiId: req.params.wikiId } } )
+  .then((collaboration) => {
+
+    return Wiki.findOne({ where: {id: req.params.wikiId }})
+    .then((wiki) => {
+      const authorized = new Authorizer(req.user, wiki).destroy();
+      if(authorized) {
+        collaboration.destroy()
+        .then((res) => {
+          callback(null, collaboration);
+        });
+      } else {
+        req.flash("notice", "You are not authorized to do that.")
+        callback(401);
+      }
+    })
+    .catch((err) => {
+      callback(err);
+    })
+  })
+  .catch((err) => {
+    callback(err);
   })
 },
   

@@ -11,7 +11,7 @@
       <% include ../static/partials/messages.ejs %>
       
       <h1><%= wiki.title %></h1>   
-      <p><%= wiki.private == true? "Private Wiki" : "Public Wiki" %></p>
+      <p><%= wiki.private == true? "Private Wiki" : "Public Wiki" %> by <%= wiki.userId %></p>
 
       <% if(currentUser) { %>
         <a href="/wikis/<%= wiki.id %>/edit" class="btn btn-warning">Edit</a>
@@ -23,8 +23,10 @@
       <% } %>
       <p><%- wikiMarkdown %></p>
       
-    <hr>
 
+
+    <% if(currentUser && (currentUser.role == "admin" || currentUser.role == "premium") && wiki.private == true) { %>
+      <hr>
       <form action="/wikis/<%= wiki.id %>/collaborations/create" method="post">
         <label>Add Collaborators</label>
         <div class="input-group">
@@ -32,15 +34,22 @@
           <button type="submit" class="btn btn-primary">Add</button>
         </div>
         </form>
+    <% } %>
 
-    <hr>
+
 
       <% if(collaborations != 0) { %>
+        <hr>
         <h2>Current Collaborators</h2>
         <ul class="list-group">
           <% collaborations.forEach((collaboration) => { %>
           <li class="list-group-item">
             <a href="/users/<%= collaboration.collaboratorId %>"> <%= collaboration.collaboratorId %> </a> 
+            <% if(currentUser && (currentUser.role == "admin" || wiki.userId == currentUser.id)) { %>
+            <form style="display:initial" action="/wikis/<%= wiki.id %>/collaborations/<%= collaboration.collaboratorId %>/destroy" method="post">
+              <button type="submit" class="btn btn-danger">Remove Collaborator</button>
+            </form>
+            <% } %>
           </li>
           <% }) %>
       </ul>
