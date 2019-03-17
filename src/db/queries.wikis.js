@@ -7,6 +7,7 @@ const Authorizer = require("../policies/wiki");
 module.exports = {
 
   getWikisForIndex(req, callback){
+    //need all collaborations for req.user
     return Wiki.scope({method: ["index", req.user]}).all()
     .then((wikis) => {
       callback(null, wikis);

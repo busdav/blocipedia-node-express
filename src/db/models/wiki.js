@@ -49,13 +49,24 @@ module.exports = (sequelize, DataTypes) => {
         }
       });
 
-  Wiki.addScope("index", (user) => {
+  Wiki.addScope("index", (user, collaborations) => {
     if(user) {
       if(user.role == "admin" || user.role == "premium") {
         return {
           order: [["createdAt", "DESC"]]
         }
-      } else {
+      } 
+      // else if(collaborations) {
+      //   // need all publics and if there are collaborations, all wikis where id = collaboration.wikiId
+      //   result = {};
+      //   collaborations.forEach((collaboration) => {
+
+      //   })
+      //   return {
+      //     order: [["createdAt", "DESC"]]
+      //   }
+      // } 
+      else {
         return {
           where: { private: false },
           order: [["createdAt", "DESC"]]
