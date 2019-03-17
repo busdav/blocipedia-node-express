@@ -23,6 +23,30 @@
       <% } %>
       <p><%- wikiMarkdown %></p>
       
+    <hr>
+
+    <% if(currentUser && (currentUser.role == "admin" || currentUser.role == "premium") && wiki.private == true) { %>
+      <form action="/wikis/<%= wiki.id %>/collaborations/create" method="post">
+        <label>Add Collaborators</label>
+        <div class="input-group">
+          <input type="text" class="form-control" name="collaboratorEmail" placeholder="Enter collaborator email">
+          <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+        </form>
+    <% } %>
+
+    <hr>
+
+      <% if(collaborations) { %>
+        <h2>Current Collaborators</h2>
+        <ul class="list-group">
+          <% collaborations.forEach((collaboration) => { %>
+          <li class="list-group-item">
+            <a href="/users/<%= collaboration.collaboratorId %>"> <%= collaboration.collaboratorId %> </a> 
+          </li>
+          <% }) %>
+      </ul>
+      <% } %>
     </main>
 
     <% include ../static/partials/baseScripts.ejs %>

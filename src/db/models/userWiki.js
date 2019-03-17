@@ -16,23 +16,28 @@ module.exports = (sequelize, DataTypes) => {
 
   UserWiki.addScope("collaborationsForWiki", (wikiId) => {
     return {
-      include: [{
-        model: models.User
-      }],
       where: { wikiId: wikiId },
-      order: [["createdAt", "ASC"]]
+      order: [["createdAt", "DESC"]]
     }
   });
 
   UserWiki.addScope("collaborationsForUser", (userId) => {
     return {
-      include: [{
-        model: models.Wiki
-      }],
       where: { collaboratorId: userId },
-      order: [["createdAt", "ASC"]]
+      order: [["createdAt", "DESC"]]
     }
   });
+
+  // old
+  // UserWiki.addScope("collaborationsForWiki", (wikiId) => {
+  //   return {
+  //     include: [{
+  //       model: models.User
+  //     }],
+  //     where: { wikiId: wikiId },
+  //     order: [["createdAt", "ASC"]]
+  //   }
+  // });
 
   return UserWiki;
 };

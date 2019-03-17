@@ -47,15 +47,17 @@ module.exports = {
     }
   },
 
+
   show(req, res, next){
-    wikiQueries.getWiki(req.params.id, (err, wiki) => {
-      if(err || wiki == null){
+    wikiQueries.getWikiAndCollaborations(req.params.id, (err, result) => {
+      if(err || result.wiki == undefined){
         res.redirect(404, "/");
       } else {
+        wiki = result.wiki;
         const authorized = new Authorizer(req.user, wiki).show();
         if(authorized) {
           const wikiMarkdown = markdown.toHTML(wiki.body);
-          res.render("wikis/show", {wiki, wikiMarkdown});
+          res.render("wikis/show", {...result, wikiMarkdown}); 
         } else {
           req.flash("You are not authorized to do that.")
           res.redirect(`/wikis`)
@@ -64,22 +66,6 @@ module.exports = {
     });
   },
 
-  // show(req, res, next){
-  //   wikiQueries.getWiki(req.params.id, (err, result) => {
-  //     if(err || result.wiki == undefined){
-  //       res.redirect(404, "/");
-  //     } else {
-  //       const authorized = new Authorizer(req.user, result.wiki).show();
-  //       if(authorized) {
-  //         const wikiMarkdown = markdown.toHTML(result.wiki.body);
-  //         res.render("wikis/show", {wikiMarkdown, ...result});
-  //       } else {
-  //         req.flash("You are not authorized to do that.")
-  //         res.redirect(`/wikis`)
-  //       }
-  //     }
-  //   });
-  // },
 
 
   destroy(req, res, next){

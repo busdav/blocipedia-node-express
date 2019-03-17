@@ -15,11 +15,11 @@
       <h1><%= `${user.email}'s profile` %></h1>
       <p>Current role: <%= user.role %></p>
 
-      <% if(user.role == "standard") { %>
+      <% if(currentUser == user && user.role == "standard") { %>
         <a href="/users/<%= user.id %>/upgrade" class="btn btn-success">Upgrade</a>
       <% } %>
 
-      <% if(user.role == "premium") { %>
+      <% if(currentUser == user && user.role == "premium") { %>
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#downgradeModal">
           Downgrade
@@ -51,23 +51,20 @@
 
       <hr>
 
-      <h2> Latest Wikis</h2>
+      <% if(wikis.length != 0) { %>
 
-      <ul class="list-unstyled">
-
- <!-- #2 -->
-        <% if(wikis) { %>
+          <h2> Latest Wikis</h2>
+          <ul class="list-unstyled">
           <% wikis.forEach((wiki) => { %>
- <!-- #3 -->
             <li>
               <a href="/wikis/<%= wiki.id %>">
                 <%= wiki.title %>
               </a>
             </li>
           <% }) %>
-        <% } %>
-      </ul>
-     
+       </ul>
+      <% } %>
+
     </main>
 
     <% include ../static/partials/baseScripts.ejs %>
