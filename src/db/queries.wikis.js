@@ -36,9 +36,9 @@ module.exports = {
     })
   },
 
-  getWikiAndCollaborations(id, callback){
+  getWikiAndCollaborations(req, callback){
        let result = {};
-       Wiki.findByPk(id)
+       Wiki.findByPk(req.params.id)
        .then((wiki) => {
          if(!wiki) {
            callback(404);
@@ -47,7 +47,14 @@ module.exports = {
            UserWiki.scope({method: ["collaborationsForWiki", wiki.id]}).all()
            .then((collaborations) => {
               result["collaborations"] = collaborations;
-              callback(null, result);
+              UserWiki.findOne( { where: { collaboratorId: req.user.id, wikiId: req.params.id } } )
+              .then((thisCollaboration) => {
+                result["thisCollaboration"] = thisCollaboration;
+                callback(null, result);
+              })
+              .catch((err) => {
+                callback(err);
+              })
             })
             .catch((err) => {
               callback(err);

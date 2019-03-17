@@ -49,12 +49,12 @@ module.exports = {
 
 
   show(req, res, next){
-    wikiQueries.getWikiAndCollaborations(req.params.id, (err, result) => {
+    wikiQueries.getWikiAndCollaborations(req, (err, result) => {
       if(err || result.wiki == undefined){
         res.redirect(404, "/");
       } else {
         wiki = result.wiki;
-        const authorized = new Authorizer(req.user, wiki).show();
+        const authorized = new Authorizer(req.user, wiki, result.thisCollaboration).show();
         if(authorized) {
           const wikiMarkdown = markdown.toHTML(wiki.body);
           res.render("wikis/show", {...result, wikiMarkdown}); 

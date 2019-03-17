@@ -1,9 +1,10 @@
 module.exports = class ApplicationPolicy {
 
   // #1
-   constructor(user, record) {
+   constructor(user, record, collaboration) {
      this.user = user;
      this.record = record;
+     this.collaboration = collaboration;
    }
  
   // #2
@@ -23,6 +24,9 @@ module.exports = class ApplicationPolicy {
     return this.user && this.user.role == "premium";
   }
 
+  _isCollaborator() {
+    return this.collaboration && this.collaboration.collaboratorId == this.user.id;
+  }
   _isPrivate() {
     return this.record && this.record.private == true;
   }
