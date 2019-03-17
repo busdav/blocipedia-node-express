@@ -15,11 +15,11 @@
       <h1><%= `${user.email}'s profile` %></h1>
       <p>Current role: <%= user.role %></p>
 
-      <% if(currentUser == user && user.role == "standard") { %>
+      <% if(currentUser.id == user.id && user.role == "standard") { %>
         <a href="/users/<%= user.id %>/upgrade" class="btn btn-success">Upgrade</a>
       <% } %>
 
-      <% if(currentUser == user && user.role == "premium") { %>
+      <% if(currentUser.id == user.id && user.role == "premium") { %>
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#downgradeModal">
           Downgrade

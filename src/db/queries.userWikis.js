@@ -15,9 +15,7 @@ module.exports = {
       if (req.user.email == user.email){
         return callback("Cannot add yourself as a collaborator!");
       }
-      // const authorized = new Authorizer(req.user, wiki).create();
-      // if(authorized) {
-        
+
         UserWiki.findAll({
           where: {
             collaboratorId: user.id,
@@ -32,25 +30,33 @@ module.exports = {
             collaboratorId: user.id,
             wikiId: req.params.wikiId
           };
-          return UserWiki.create(newCollaboration)
-          .then((collaboration) => {
-            callback(null, collaboration);
-          })
-          .catch((err) => {
-            callback(err, null);
-          })
+          return Wiki.findOne({ where: {id: req.params.wikiId }})
+          .then((wiki) => {
+            const authorized = new Authorizer(req.user, wiki).create();
+            if(authorized) {
+              return UserWiki.create(newCollaboration)
+              .then((collaboration) => {
+                callback(null, collaboration);
+              })
+              .catch((err) => {
+                callback(err, null);
+              })
+            } else {
+              req.flash("notice", "You are not authorized to do that.");
+              callback("Forbidden");
+            }
         })
         .catch((err)=>{
           callback(err, null);
         })
-      // } else {
-      //   req.flash("notice", "You are not authorized to do that.");
-      //   callback("Forbidden");
-      // }
     })
     .catch((err)=>{
       callback(err, null);
     })
-  },
+  })
+  .catch((err)=>{
+    callback(err, null);
+  })
+},
   
 }
